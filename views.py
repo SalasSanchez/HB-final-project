@@ -28,10 +28,12 @@ Markdown(app)
 def index():
     user_id = current_user.id
     codes = model.Code.query.filter_by(user_id=user_id).all() 
-    return render_template("index.html", codes=codes)
+    return "This is the main page"
+        #render_template("index.html", codes=codes)
 
 # @app.route("/post/<int:id>")
-# def view_post(id):
+# def view_post(id):psycopg2==2.5.1
+
 #     post = Post.query.get(id)
 #     return render_template("post.html", post=post)
 
@@ -54,7 +56,7 @@ def add_code():
     model.session.commit()
     model.session.refresh(code)
 
-    return redirect(url_for("index")
+    return redirect(url_for("index"))
 
     #TODO: Check the redirects- is this correct if the new-code form is already on index.html?
 
@@ -62,6 +64,7 @@ def add_code():
 @app.route("/set_user")
 def set_user():
     return render_template("set_user.html")
+
 
 @app.route("/set_user", methods=["POST"])
 def authenticate():
@@ -98,6 +101,8 @@ def create_user():
                              last_name= last_name,
                              email=email,
                              password=password)
+
+    #user.session.commit()??? check sqlalchemy
 
     login_user(user)
     return redirect(request.args.get("next", url_for("index")))
