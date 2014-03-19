@@ -1,6 +1,6 @@
 import config
-import bcrypt
-from datetime import datetime
+#import bcrypt
+import datetime 
 
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine, ForeignKey
@@ -9,6 +9,9 @@ from sqlalchemy import Column, Integer, String, DateTime, Text
 from sqlalchemy.orm import sessionmaker, scoped_session, relationship, backref
 
 from flask.ext.login import UserMixin
+
+import hashlib
+
 
 engine = create_engine(config.DB_URI, echo=False) 
 session = scoped_session(sessionmaker(bind=engine,
@@ -24,48 +27,40 @@ class User(Base, UserMixin):   #UserMixin- only for user model definitions.
     first_name = Column(String(64), nullable=False)
     last_name = Column(String(64), nullable=False)
     email = Column(String(64), nullable=False)
+    
     password = Column(String(64), nullable=False)
-    created_on = Column(DateTime, nullable=False)
+    created_on = Column(DateTime, nullable=False, default=datetime.datetime.today())
 
 
-    codes = relationship("Code", backref="users")  
-                                #uselist=True? what does this do again? 
-                                #if uselist=False, it returns a scalar, 
-                                #but then, wouldn't the default be a list?
+    salt = "sdjbagadfkljgb"
 
-    buddies = relationship("User", secondary="friendships") 
-    #Backref- something different is going on
 
     def set_password(self, password):
-        self.salt = bcrypt.gensalt()
         password = password.encode("utf-8")
-        self.password = bcrypt.hashpw(password, self.salt)
+        self.password = hashlib.sha1(password + self.salt).hexdigest()
 
     def authenticate(self, password):
         password = password.encode("utf-8")
-        return bcrypt.hashpw(password, self.salt.encode("utf-8")) == self.password
+        return hashlib.sha1(password + self.salt).hexdigest() == self.password
+
 
 
 class Code(Base):
     __tablename__ = "codes"
     
     id = Column(Integer, primary_key=True)
-    link_code = Column(String(200), nullable=False)
-    company = Column(Integer, ForeignKey("companies.id"), nullable=False)
-    expiry_date = Column(DateTime, nullable=True) #should i include a default if it is nullable?
-    #category= Column(String(60), ForeignKey("categories.id"), nullable=True)
+    referral_code = Column(String(200), nullable=False)
+    company_id = Column(Integer, ForeignKey("companies.id"), nullable=False)
+    expiry_date = Column(DateTime) 
     user_id = Column(Integer, ForeignKey("users.id"))
-    date_added = Column(DateTime, nullable=False)
+    date_added = Column(DateTime, nullable=False, default=datetime.datetime.today())
+    description = Column(Text(200))
+    url = Column(String(200))
 
 
-    # According to docs- it is the parent class that has the 'relationship' 
-    # each of these Foreign Keys must refer to classes where the attribute are primary key
+    user = relationship("User", backref="codes")  
+    company = relationship("Company", backref="codes")  
 
-    codescat = relationship("Category", secondary= "codescats", backref="codes")
-
-    #secondary- for an association table, many-one-one-many. 
-    #But this is not quite this- this is one-many-one-many. One code-many categories.
-    #TODO: check if it is the same.
 
 
 class Friendship(Base):
@@ -76,18 +71,20 @@ class Friendship(Base):
     buddy_id = Column(Integer, ForeignKey("users.id"))
     is_active = Column(String(10), nullable=False)
 
-    #association table to users- the relationship is on users.
+    buddy = relationship("User", foreign_keys= [buddy_id], backref="buddies")
+    user = relationship("User", foreign_keys= [user_id], backref="user") 
+
+
+
 
 class Company(Base):
     __tablename__ = "companies"
 
     id = Column(Integer, primary_key=True)
     name = Column(String(80), nullable=False)
-    date_added = Column(DateTime, nullable=False)
+    date_added = Column(DateTime, nullable=False, default=datetime.datetime.today())
 
-    #parent to codes:
-    codes = relationship("Code", backref="companies")  
-
+    #parent to codes
 
 class Category(Base):
     __tablename__ = "categories"
@@ -95,7 +92,6 @@ class Category(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(40), nullable=False)
 
-    #this table is part of the association table CodesCat- so it is the child of codes. 
 
 
 class CodesCat(Base):
@@ -105,19 +101,28 @@ class CodesCat(Base):
     code_id = Column(Integer, ForeignKey("codes.id"))
     category_id = Column(Integer, ForeignKey("categories.id")) 
 
+    code = relationship("Code", foreign_keys= [code_id], backref="categories")
+    categories = relationship("Category", foreign_keys= [category_id], backref="codes") 
+
     # This is an association table, so the parent is really codes, the child is categories.
 
 
 
+def create_tables():
+    Base.metadata.create_all(engine)
+    # this introduces items in tables
+    u = User(email="second@test.com", first_name="john", last_name="Sanch")
+    u.set_password("unicorn")
+    c = Code(referral_code= "ANOTHERTEST", user_id=2, company_id=1)
+    b = User(email="buddy@gmail.com", first_name="mac", last_name="buddy")
+    b.set_password("alsounicorn")
+    co = Company(name="Burton")
 
-# def create_tables():
-#     Base.metadata.create_all(engine)
-#     u = User(email="test@test.com")
-#     u.set_password("unicorn")
-#     session.add(u)
-#     p = Post(title="This is a test post", body="This is the body of a test post.")
-#     u.posts.append(p)
-#     session.commit()
+    session.add(co)
+    session.add(c)
+    session.add(u)
+    session.add(b)
+    session.commit()
 
 
 
