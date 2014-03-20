@@ -28,8 +28,7 @@ def load_users(session):
                            email=email,
                            password=p,
                            created_on=created_on)
-            u.password = model.User.set_password(u, p)
-            print u.password 
+            u.set_password(p)
             session.add(u)
         session.commit() #if buggy, commit after every add, so that an error gives a specific line
     
