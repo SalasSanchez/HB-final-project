@@ -51,12 +51,11 @@ class Code(Base):
     id = Column(Integer, primary_key=True)
     referral_code = Column(String(200), nullable=False)
     company_id = Column(Integer, ForeignKey("companies.id"), nullable=False)
-    expiry_date = Column(DateTime) 
-    user_id = Column(Integer, ForeignKey("users.id"))
+    expiry_date = Column(DateTime, default=datetime.datetime(3000, 1, 1)) 
+    user_id = Column(Integer, ForeignKey("users.id"), default=0)
     date_added = Column(DateTime, nullable=False, default=datetime.datetime.today())
-    description = Column(Text(200))
-    url = Column(String(200))
-
+    description = Column(Text(200), default="No description")
+    url = Column(String(200), default="No URL")
 
     user = relationship("User", backref="codes")  
     company = relationship("Company", backref="codes")  
@@ -111,19 +110,28 @@ class CodesCat(Base):
 def create_tables():
     Base.metadata.create_all(engine)
     # this introduces items in tables
-    u = User(email="second@test.com", first_name="john", last_name="Sanch")
-    u.set_password("unicorn")
-    c = Code(referral_code= "ANOTHERTEST", user_id=2, company_id=1)
-    b = User(email="buddy@gmail.com", first_name="mac", last_name="buddy")
-    b.set_password("alsounicorn")
-    co = Company(name="Burton")
+    # u = User(email="second@test.com", first_name="john", last_name="Sanch")
+    # u.set_password("unicorn")
+    # c = Code(referral_code= "ANOTHERTEST", user_id=2, company_id=1)
+    # b = User(email="buddy@gmail.com", first_name="mac", last_name="buddy")
+    # b.set_password("alsounicorn")
+    # co = Company(name="Burton")
 
-    session.add(co)
-    session.add(c)
-    session.add(u)
-    session.add(b)
+    # session.add(co)
+    # session.add(c)
+    # session.add(u)
+    # session.add(b)
     session.commit()
 
+
+def connect():
+    global ENGINE
+    global Session
+
+    ENGINE = create_engine("sqlite:///my_app.db", echo=True)
+    Session = sessionmaker(bind=ENGINE)
+
+    return Session()
 
 
 if __name__ == "__main__":
