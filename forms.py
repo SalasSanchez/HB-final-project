@@ -12,6 +12,6 @@ class NewCodeForm(Form):
 class NewUserForm(Form):
 	first_name = TextField("First Name", [validators.Required()])
 	last_name = TextField("Last Name", [validators.Required()])
-	email = TextField("Email", [validators.Required()], validators.Email())
+	email = TextField("Email", [validators.Required(), validators.Email()])
 	password = PasswordField("Password", [validators.Required()])  
 	#how does it connect with the password that will be authenticated?

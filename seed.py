@@ -4,7 +4,6 @@ import datetime
 import re 
 
 
- #IN GENERAL: DEFAULT VALUES from Model?
 
 def load_users(session):
     with open("seed_data/u.user.tsv") as f:  #seed_data/u.user is the name 
@@ -19,7 +18,7 @@ def load_users(session):
             email = row[2]
             p=row[3]
             if row[4]:
-                created_on = datetime.datetime.strptime(row[4], "%Y,%m,%d")    #01-Jan-1995
+                created_on = datetime.datetime.strptime(row[4], "%Y,%m,%d")    #1992,12,31
             else:
                 created_on = datetime.datetime.today()
             u = model.User(  #this is calling the function on model.py, which makes the table
@@ -32,7 +31,7 @@ def load_users(session):
             session.add(u)
         session.commit() #if buggy, commit after every add, so that an error gives a specific line
     
-    #TODO: set_password is coming out as None. UGH.
+    
 
 
 def load_codes(session):
