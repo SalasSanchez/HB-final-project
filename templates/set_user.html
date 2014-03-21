@@ -1,0 +1,35 @@
+<html>
+<head>
+        <title>Referraly</title>
+        <link rel="stylesheet" href="/static/css/bootstrap.min.css">
+        <script type="text/javascript" src="/static/js/bootstrap.js"></script>
+        <script type="text/javascript" src="/static/js/jquery-2.0.3.min.js"></script>
+</head>
+{% block body %}
+<h1>REFERRALY</h1>
+<h2>Share your referral codes</h2>
+
+<h3>Log in</h3>
+<form method="post" action="/log_in">
+    <input type="text" name="email" placeholder="Email"><br>
+    <input type="password" name="password" placeholder="Password"><br>
+    <input type="submit">
+</form>
+
+<h3>Not a member? Sign up here:</h3>
+<form method="post" action="/register">
+    <input type="text" name= "first_name" placeholder="First Name"><br>
+    <input type="text" name= "last_name" placeholder="Last Name"><br>
+    <input type="text" name="email" placeholder="Email"><br>
+    <input type="password" name="password" placeholder="Create a Password"><br>
+    <input type="submit">
+</form>
+
+
+
+
+
+
+{% endblock %}
+
+</html>
