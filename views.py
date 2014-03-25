@@ -32,26 +32,24 @@ def authenticate():
     login_form = forms.LoginForm(request.form)
     if not login_form.validate():
         flash("Incorrect username or password") 
-        return "It didn't work"
-        #return render_template("set_user.html")
+        return render_template("set_user.html")
 
     email = login_form.email.data
     password = login_form.password.data
 
     user = model.User.query.filter_by(email=email).first() 
     
-    print user 
+    
 
     if not user or not user.authenticate(password):
         flash("Incorrect username or password") 
-        return "wrong"
-        #return render_template("set_user.html")
+        return render_template("set_user.html")
 
     login_user(user)
-    return "You're logged in"
-    #return redirect(request.args.get("next", url_for("index")))
-    #what's this 'next'
+    flash("You're logged in")
 
+    return redirect(url_for("main_wallet"))
+    
 
 
 @app.route("/register", methods=["POST"])
@@ -60,8 +58,7 @@ def create_user():
     new_user_form = forms.NewUserForm(request.form)
     if not new_user_form.validate():
         flash("Please, fill out all fields")
-        return "It didn't work" 
-        #render_template("wallet.html")
+        return render_template("set_user.html")
 
     first_name = new_user_form.first_name.data
     last_name = new_user_form.last_name.data
@@ -75,25 +72,23 @@ def create_user():
     user.set_password(password)
     model.session.add(user)
     model.session.commit()
-    return "You've created a profile"
-#     login_user(user)
-#     return redirect(request.args.get("next", url_for("index")))
+    
+    login_user(user)
+    return redirect(url_for("main_wallet"))
 
 
+@app.route("/main_wallet")
+@login_required
+def main_wallet():
+    user_id = current_user.id
+    codes = model.Code.query.filter_by(user_id=user_id).all() 
+    
+    print codes 
+
+    return render_template("codes_list.html", codes=codes)
+    
 
 
-
-
-
-
-
-# @app.route("/")
-# @login_required
-# def index():
-#     user_id = current_user.id
-#     codes = model.Code.query.filter_by(user_id=user_id).all() 
-#     return "This is the main page"
-#         #render_template("index.html", codes=codes)
 
 # # @app.route("/post/<int:id>")
 # # def view_post(id):psycopg2==2.5.1

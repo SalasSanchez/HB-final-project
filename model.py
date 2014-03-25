@@ -13,7 +13,7 @@ from flask.ext.login import UserMixin
 import hashlib
 
 
-engine = create_engine(config.DB_URI, echo=False) 
+engine = create_engine(config.DB_URI, echo=True) 
 session = scoped_session(sessionmaker(bind=engine,
                          autocommit = False,
                          autoflush = False))
@@ -54,7 +54,7 @@ class Code(Base):
     expiry_date = Column(DateTime, default=datetime.datetime(3000, 1, 1)) 
     user_id = Column(Integer, ForeignKey("users.id"), default=0)
     date_added = Column(DateTime, nullable=False, default=datetime.datetime.today())
-    description = Column(Text(200), default="No description")
+    description = Column(String(200), default="No description")
     url = Column(String(200), default="No URL")
 
     user = relationship("User", backref="codes")  
@@ -128,11 +128,14 @@ def connect():
     global ENGINE
     global Session
 
-    ENGINE = create_engine("sqlite:///my_app.db", echo=True)
+    # ENGINE = create_engine("sqlite:///my_app.db", echo=True)
+    ENGINE = create_engine(config.DB_URI, echo=True) 
+
     Session = sessionmaker(bind=ENGINE)
 
     return Session()
 
 
 if __name__ == "__main__":
-    create_tables()
+    # create_tables()
+    pass

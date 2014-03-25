@@ -46,7 +46,7 @@ def load_codes(session):
             if row[2]:
                 expiry_date = datetime.datetime.strptime(row[2], "%Y,%m,%d")    
             else:
-                expiry_date = datetime.datetime.today()
+                expiry_date = datetime.datetime(3000, 1, 1)
             user_id = row[3]
             if row[4]:
                 date_added = datetime.datetime.strptime(row[4], "%Y,%m,%d")
@@ -127,11 +127,12 @@ def load_codescats(session):
 
 def main(session):
     load_users(session)
+    load_companies(session)
     load_codes(session)
     load_friendships(session)
     load_categories(session)
     load_codescats(session)
-    load_companies(session)
+    
 
 
 if __name__ == "__main__":
