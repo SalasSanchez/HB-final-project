@@ -3,15 +3,15 @@
 
 {% block content %}
 
-<h3>Log in</h3>
-<form method="post" action="/log_in">
+<form class="form" method="post" action="/log_in">
+    <h3>Log in</h3>
     <input type="text" name="email" placeholder="Email"><br>
     <input type="password" name="password" placeholder="Password"><br>
     <input type="submit">
 </form>
 
-<h3>Not a member? Sign up here:</h3>
-<form method="post" action="/register">
+<form class="form" method="post" action="/register">
+    <h3>Not a member? Sign up here:</h3>
     <input type="text" name= "first_name" placeholder="First Name"><br>
     <input type="text" name= "last_name" placeholder="Last Name"><br>
     <input type="text" name="email" placeholder="Email"><br>

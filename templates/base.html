@@ -7,6 +7,28 @@
         <link rel="stylesheet" href="/static/css/bootstrap.min.css">
         <script type="text/javascript" src="/static/js/bootstrap.js"></script>
         <script type="text/javascript" src="/static/js/jquery-2.0.3.min.js"></script>
+        <style> body {
+                    font-family: arial;
+                    font-size:large;
+                    background-color:hsla(204, 33%, 65%, 0.75);
+                }
+                
+                .form {
+
+                    font-size:large;
+                    float:left;
+                    padding: 30px 30px 30px 30px;
+                }
+
+                .list {
+
+                    font-size:large;
+                    float:center;
+                    padding: 30px 30px 30px 30px;
+                }
+
+
+        </style>
     </head>
     <body>
         <h1>REFERRALY</h1>
@@ -17,10 +39,10 @@
             <div class="navbar-inner">
                 <div class="container">
                     <ul class="nav">
-                        <li><a href="{{url_for("main_wallet")}}">Codes</a></li>
-                        <li><a href="#">Add code</a></li>
-                        <li><a href="{{url_for("authenticate")}}">Login</a></li>
-                        <li><a href="#">Buddies</a><li></ul>
+                        <li><a href="{{url_for("main_wallet")}}">Manage your codes</a></li>
+                        <li><a href="#">Codes for you</a><li>
+                        <li><a href="{{url_for("see_buddies")}}">Buddies</a><li>
+                        <li><a href="{{url_for("set_user")}}">Login</a></li></ul>
                 </div>
             </div>
         </div>

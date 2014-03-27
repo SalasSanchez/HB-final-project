@@ -1,0 +1,20 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+
+<div class="list">
+            <h3> About your code:</h3>
+            <ul>
+                <li><h5>Referral code:</h5> {{referral_code}}</li><br>
+				<li><h5>Company:</h5> {{company_name}}</li><br>            
+				<li><h5>Expiry Date:</h5> {{expiry_date}}</li><br>
+				<li><h5>Description:</h5> {{description}}</li><br>
+				<li><h5>Url:</h5><a href="http://{{url}}">{{url}}</a></li><br>
+            </ul>
+</div>
+
+
+
+{% endblock %}

@@ -106,6 +106,24 @@ class CodesCat(Base):
     # This is an association table, so the parent is really codes, the child is categories.
 
 
+# class Invitation(Base):
+#     __tablename__ = "invitations"
+
+#     id = Column(Integer, primary_key=True)
+#     first_name = Column(String(64), nullable=False)
+#     last_name = Column(String(64), nullable=False)
+#     email = Column(String(64), nullable=False)
+#     sent_at =Column(DateTime, nullable=False, default=datetime.datetime(3000, 1, 1))
+
+
+
+
+
+
+
+
+
+
 
 def create_tables():
     Base.metadata.create_all(engine)
