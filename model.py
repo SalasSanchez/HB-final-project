@@ -35,6 +35,7 @@ class User(Base, UserMixin):   #UserMixin- only for user model definitions.
     salt = "sdjbagadfkljgb"
 
 
+
     def set_password(self, password):
         password = password.encode("utf-8")
         self.password = hashlib.sha1(password + self.salt).hexdigest()
@@ -106,16 +107,21 @@ class CodesCat(Base):
     # This is an association table, so the parent is really codes, the child is categories.
 
 
-# class Invitation(Base):
-#     __tablename__ = "invitations"
+class Invitation(Base):
+    __tablename__ = "invitations"
 
-#     id = Column(Integer, primary_key=True)
-#     first_name = Column(String(64), nullable=False)
-#     last_name = Column(String(64), nullable=False)
-#     email = Column(String(64), nullable=False)
-#     sent_at =Column(DateTime, nullable=False, default=datetime.datetime(3000, 1, 1))
+    id = Column(Integer, primary_key=True)
+    first_name = Column(String(64), nullable=False)
+    last_name = Column(String(64), nullable=False)
+    email = Column(String(64), nullable=False)
+    message = Column(String(300), nullable=True)
+    sent_at = Column(DateTime, nullable=False, default=datetime.datetime(3000, 1, 1))
+    inviter_id = Column(Integer, ForeignKey("users.id"))
+    invitee_id = Column(Integer, ForeignKey("users.id"))
+    status = Column(String(20))
 
-
+    inviter = relationship("User", foreign_keys= [inviter_id], backref="invitees")
+    invitee = relationship("User", foreign_keys= [invitee_id], backref="inviters") 
 
 
 
