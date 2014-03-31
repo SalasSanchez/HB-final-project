@@ -1,5 +1,4 @@
 import config
-#import bcrypt
 import datetime 
 
 from sqlalchemy.ext.declarative import declarative_base
@@ -104,7 +103,7 @@ class CodesCat(Base):
     code = relationship("Code", foreign_keys= [code_id], backref="categories")
     categories = relationship("Category", foreign_keys= [category_id], backref="codes") 
 
-    # This is an association table, so the parent is really codes, the child is categories.
+    #This is an association table, so the parent is really codes, the child is categories.
 
 
 class Invitation(Base):
@@ -113,7 +112,7 @@ class Invitation(Base):
     id = Column(Integer, primary_key=True)
     first_name = Column(String(64), nullable=False)
     last_name = Column(String(64), nullable=False)
-    email = Column(String(64), nullable=False)
+    invitee_email = Column(String(64), nullable=False)
     message = Column(String(300), nullable=True)
     sent_at = Column(DateTime, nullable=False, default=datetime.datetime(3000, 1, 1))
     inviter_id = Column(Integer, ForeignKey("users.id"))
@@ -133,18 +132,6 @@ class Invitation(Base):
 
 def create_tables():
     Base.metadata.create_all(engine)
-    # this introduces items in tables
-    # u = User(email="second@test.com", first_name="john", last_name="Sanch")
-    # u.set_password("unicorn")
-    # c = Code(referral_code= "ANOTHERTEST", user_id=2, company_id=1)
-    # b = User(email="buddy@gmail.com", first_name="mac", last_name="buddy")
-    # b.set_password("alsounicorn")
-    # co = Company(name="Burton")
-
-    # session.add(co)
-    # session.add(c)
-    # session.add(u)
-    # session.add(b)
     session.commit()
 
 

@@ -4,7 +4,7 @@
 
 {% block content %}
       <div class="list">
-            <h3> Check out your codes:</h3>
+            <h3> Codes that you are sharing:</h3>
             <ul>
             {% for code in codes %}
                 <li><a href="/see_details/{{code.id}}">{{ code.company.name }}</a></li> 
@@ -15,8 +15,8 @@
       <div class="form">
             <h3>Add a new code:</h3>
             <form method="post" action="/new_code">
-                  <input type="text" name="company" placeholder="Company"><br>
-                  <input type="text" name="code" placeholder="Code or Link"><br>
+                  <input type="text" name="company" placeholder="Company*"><br>
+                  <input type="text" name="code" placeholder="Code or Link*"><br>
                   <input type="text" name="url" placeholder="URL for website"><br>
                   <input type="text" name="category" placeholder="Category"><br>
                   <h4>What's the expiry date?</h4><br>
