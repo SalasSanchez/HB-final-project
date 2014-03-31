@@ -1,0 +1,20 @@
+{
+  "name": "Referraly",
+  "description": "Shows codes available for website and adds codes",
+  "manifest_version": 2,
+  "version": "1",
+  "description": "Optimizes referral code sharing",
+  "icons": { "128": "icons/blackR_128.png" },
+  "permissions": ["tabs",
+        "*://*/",
+        "background",
+        "contextMenus",
+        "webNavigation"],
+  "background": {"scripts": "jquery.js", "background.js"},
+  "browser_action": {
+    "default_title": "",
+    "default_icon": "icons/blackR_128.png",
+    "default_title": "Manage your codes with Referraly",
+    "default_popup": "popup.html"
+  }
+}
