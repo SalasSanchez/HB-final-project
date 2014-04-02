@@ -341,14 +341,18 @@ def add_code_plugin():
     return "A new code was added"
 
 
-select * from codes where url like '%site%'
-
-
-@app.route("/codes/by_site")
+@app.route("/ajax/popup/", methods=["GET"])
+@login_required
 def get_codes_by_site():
     url = request.args.get("site")
-    codes  = model.Code.query.filter(model.Code.url.like("\%%s\%"%site).filter_by(user_id=current_user.id).all()
-    return render_template("codes_by_site", codes=codes)
+    codes = model.Code.query.filter(model.Code.url.like('%'+url+'%')).filter_by(user_id=current_user.id).all()
+    template = render_template("popup_content.html", codes=codes)
+    print template
+    return template
+
+    #RETURN JSON
+
+
 
 
 if __name__ == "__main__":
