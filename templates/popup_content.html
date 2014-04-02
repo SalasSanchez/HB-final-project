@@ -1,0 +1,24 @@
+{% with messages = get_flashed_messages(with_categories=true) %}
+	    {% if messages %}
+	    <ul class=flashes>
+	        {% for category, message in messages %}
+	        <li class="{{ category }}">{{ message }}</li>
+	        {% endfor %}
+	    </ul>
+	    {% endif %}
+	    {% endwith %}
+
+
+
+	    {% block content %}
+
+			<div id="codes"><h4>Available codes:</h4>
+				<div id="codes_list">
+
+					{% for code in codes %}
+                	<li><a href="/see_details/{{code.id}}">{{ code.company.name }}</a></li> 
+            		{% endfor %}
+
+				</div>
+			</div>
+		{% endblock %}

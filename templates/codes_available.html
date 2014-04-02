@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block content %}
+      <div>
+            <h3> Codes you can use:</h3>
+
+            <ul>
+
+            {% for code in codes %}
+                <li><a href="/see_details?id={{code.id}}">{{ code.company.name }}</a></li> 
+            {% endfor %}
+
+            </ul>
+      </div>
+      
+{% endblock %}
+
