@@ -12,7 +12,7 @@ formSubmitButton.on("click", function(event){
     $.ajax({
         url: "http://localhost:5000/ajax/new_code",
         method: "POST",
-        data: $("form#add_code_form").serialize() + "user_id=" + "3"
+        data: $("form#add_code_form").serialize()
     }).done(function(data){
         alert(data);
     }).fail(function(){
@@ -26,8 +26,24 @@ formSubmitButton.on("click", function(event){
 // log in on click---nstore in a cookie.
 // hardcode user for plugin demo.
 
+window.ocation// APROX.
+
+var 
 
 // on document load or event-clickeon.
 // method - get
 // data; user id('')
 // empy div where Avaliblae code--- replace the empy dic with the hmtl  with: INNERHTML 
+
+
+
+
+
+
+
+
+
+
+
+
+

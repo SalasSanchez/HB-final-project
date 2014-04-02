@@ -6,7 +6,6 @@ import config
 import forms
 import os
 import json
-import requests
 
 
 app = Flask(__name__)
@@ -15,7 +14,7 @@ app.config.from_object(config)
 # Stuff to make login easier
 login_manager = LoginManager()
 login_manager.init_app(app)
-login_manager.login_view = "login"
+login_manager.login_view = "set_user"
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -120,6 +119,16 @@ def code_details(code_id):
                                                 description=description,
                                                 url=url)
 
+def finds_company_id(company_name):
+    company = model.Company.query.filter_by(name=company_name).first()
+
+    if not company:
+        company = model.Company(name=company_name)
+        model.session.add(company)
+        model.session.commit()
+
+    return company.id
+
 
 
 @app.route("/new_code", methods=["POST"])
@@ -130,16 +139,9 @@ def add_code():
         flash("Error, all fields are required")
         return render_template("main_wallet.html")
 
-    if model.Company.query.filter_by(name=form.company.data).first():
-        company = model.Company.query.filter_by(name=form.company.data).first()
-    
-    else:
-        company = model.Company(name=form.company.data)
-        model.session.add(company)
-        model.session.commit()
-        company = model.Company.query.filter_by(name=form.company.data).first()
+    company= form.company.data
 
-    company_id = company.id
+    company_id = finds_company_id(company)
 
     if form.expiry_date.data=="":
         form.expiry_date.data = None
@@ -290,51 +292,63 @@ def get_codes(code_id):
 
 #def new_code_popup /ajax/new_code
 
-# @app.route("/ajax/new_code", methods=["POST"])
-# #@login_required
-# def add_code(data):
-#     form_info= request.form.get(data)
-#     print form_info
+@app.route('/popup')
+def code_form():
+    return render_template("popup.html")
 
+
+@app.route("/ajax/new_code", methods=["POST"])
+@login_required
+def add_code_plugin():
+    company= request.form.get('company')
     
+    company_id = finds_company_id(company)
+
+    referral_code = request.form.get('code')
+
+    if request.form.get('url'):
+        url = request.form.get('url')
+    else:
+        url = "No URL"
 
 
+    if request.form.get('expiry_date'):
+        expiry_date = request.form.get('expiry_date')
+    else: 
+        expiry_date = ""
 
 
-#     form = forms.NewCodeForm(request.form)
-#     if not form.validate():
-#         flash("Error, all fields are required")
-#         return render_template("main_wallet.html")
+    if request.form.get('description'):
+        description = request.form.get('description')
+    else:
+        description = "No description"
 
-#     if model.Company.query.filter_by(name=form.company.data).first():
-#         company = model.Company.query.filter_by(name=form.company.data).first()
+    user_id = current_user
+
+    code = model.Code(company_id=company_id,
+                referral_code=referral_code, 
+                url=url,
+                expiry_date=expiry_date,
+                description=description,
+                user_id=user_id)
+
+    current_user.codes.append(code) 
     
-#     else:
-#         company = model.Company(name=form.company.data)
-#         model.session.add(company)
-#         model.session.commit()
-#         company = model.Company.query.filter_by(name=form.company.data).first()
+    model.session.commit()
+    model.session.refresh(code)
+    flash("You've added a code to your wallet")
 
-#     company_id = company.id
-
-#     if form.expiry_date.data=="":
-#         form.expiry_date.data = None
-
-#     code = model.Code(company_id=company_id,
-#                 referral_code=form.code.data, 
-#                 url=form.url.data,
-#                 expiry_date=form.expiry_date.data,
-#                 description=form.description.data)
-
-#     current_user.codes.append(code) 
-    
-#     model.session.commit()
-#     model.session.refresh(code)
-#     flash("You've added a code to your wallet")
-
-#     return redirect(url_for("main_wallet"))
+    return "A new code was added"
 
 
+select * from codes where url like '%site%'
+
+
+@app.route("/codes/by_site")
+def get_codes_by_site():
+    url = request.args.get("site")
+    codes  = model.Code.query.filter(model.Code.url.like("\%%s\%"%site).filter_by(user_id=current_user.id).all()
+    return render_template("codes_by_site", codes=codes)
 
 
 if __name__ == "__main__":
