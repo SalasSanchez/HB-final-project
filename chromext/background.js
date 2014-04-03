@@ -1,34 +1,28 @@
 
-  // React when a browser action's icon is clicked.
-// chrome.browserAction.onClicked.addListener(function(tab) {
-//   console.log("Hey, this works");
-// });
-
-
-var formSubmitButton = $("#form_submit");
-
-formSubmitButton.on("click", function(event){
-    event.preventDefault(); // prevent the browser form submission from happening
+// log in on click---nstore in a cookie.
+// hardcode user for plugin demo.
+// this must be tested as a plugin- browseraction. must connect it. 
+// This means that the url will be shortened
+chrome.browserAction.onClicked.addListener(function(event){
+    console.log("HOLA");
+    event.preventDefault();
     $.ajax({
-        url: "http://localhost:5000/ajax/new_code",
-        method: "POST",
-        data: $("form#add_code_form").serialize()
+        data: window.location.href,
+        url:"http://localhost:5000/ajax/popup?site="+data,
+        method: "GET"
     }).done(function(data){
         alert(data);
+        // data is template string
+        // put the template string insite your empty div
+        $('popup_content').innerHTML(data);
     }).fail(function(){
         alert('Fail');
     });
-
 });
 
 
 
-// log in on click---nstore in a cookie.
-// hardcode user for plugin demo.
 
-window.ocation// APROX.
-
-var 
 
 // on document load or event-clickeon.
 // method - get
