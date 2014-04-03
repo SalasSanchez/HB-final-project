@@ -6,6 +6,7 @@ import config
 import forms
 import os
 import json
+import re
 
 
 app = Flask(__name__)
@@ -300,6 +301,7 @@ def code_form():
 @app.route("/ajax/new_code", methods=["POST"])
 @login_required
 def add_code_plugin():
+    print "new_code hit"
     company= request.form.get('company')
     
     company_id = finds_company_id(company)
@@ -344,13 +346,17 @@ def add_code_plugin():
 @app.route("/ajax/popup/", methods=["GET"])
 @login_required
 def get_codes_by_site():
-    url = request.args.get("site")
-    codes = model.Code.query.filter(model.Code.url.like('%'+url+'%')).filter_by(user_id=current_user.id).all()
-    template = render_template("popup_content.html", codes=codes)
-    print template
-    return template
+    long_url = request.args.get("site")
+    url_list=long_url.split("/")
+    p = re.compile("www.")
+    
+    url = ""
+    for item in url_list:
+        if p.match(item):
+            url=item
 
-    #RETURN JSON
+    codes = model.Code.query.filter(model.Code.url.like('%'+url+'%')).filter_by(user_id=current_user.id).all()
+    return render_template("popup_content.html", codes=codes)
 
 
 
