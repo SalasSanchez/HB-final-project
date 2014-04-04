@@ -1,0 +1,34 @@
+
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-md-6">
+            <div class="panel panel-info">
+                <div class="panel-heading">Open invitations for user:</div>
+                <div class="panel-body">
+                    <ul>
+                    {% for invite in invitations %}
+                        <li><a href="/admin/accept_invite/{{invite.id}}">{{ invite.first_name}} {{ invite.last_name }} </a></li> 
+                    {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+    <div class="col-md-6">
+            <div class="panel panel-info">
+                <div class="panel-heading">Choose a user:</div>
+                <div class="panel-body">
+                    <form class="form" method="post" action="/admin/by_email">
+                          <h6>What's the email address for the user?</h6><br>
+                          <input type="text" name="email" placeholder="Email Address"><b>
+                          <input type="submit">
+                    </form>
+                </div>
+            </div>
+    </div>
+</div>
+
+{% endblock %}
