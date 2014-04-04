@@ -3,19 +3,23 @@
 {% block content %}
 
 
-<div class="list">
-    <h3> About your buddy:</h3>
-    <ul>
-        <li><h5>Name:</h5> {{first_name}} {{last_name}}</li><br>
-		<li><h5>Email:</h5> {{email}} </li><br>            
-		<li><h5>Available Codes:</h5></li><br>
-		
-		{% for code in codes %}
-												
-			<li><a href="/see_details/{{code.id}}">{{code.company.name}}</a></li>
-		
-		{% endfor %}
-    </ul>
+<div class="col-md-6">
+        <div class="panel panel-info">
+                <div class="panel-heading">About your buddy:</div>
+                    <div class="panel-body">      
+					    <ul>
+					        <li><h5>Name:</h5> {{first_name}} {{last_name}}</li><br>
+							<li><h5>Email:</h5> {{email}} </li><br>            
+							<li><h5>Available Codes:</h5></li><br>
+							
+							{% for code in codes %}
+																	
+								<li><a href="/see_details/{{code.id}}">{{code.company.name}}</a></li>
+							
+							{% endfor %}
+					    </ul>
+					</div>    
+		</div>
 </div>
 
 

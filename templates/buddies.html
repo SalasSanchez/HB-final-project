@@ -2,27 +2,36 @@
 
 {% block content %}
 
-<div class="list">
-	<h3> Check out your buddies:</h3>
-    <ul>
-    {% for buddy in buddies %}
-        <li><a href="/buddy/{{buddy.id}}">{{ buddy.first_name }}</a></li> 
-    {% endfor %}
-    </ul>
+<div class="row">
+    <div class="col-md-6">
+        <div class="panel panel-info">
+                <div class="panel-heading">Check out your buddies:</div>
+                    <div class="panel-body">
+                        <ul>
+                        {% for buddy in buddies %}
+                            <li><a href="/buddy/{{buddy.id}}">{{ buddy.first_name }}</a></li> 
+                        {% endfor %}
+                        </ul>
+                    </div>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <div class="panel panel-info">
+                <div class="panel-heading">Add a new buddy:</div>
+                    <div class="panel-body">   
+                        <form class="form" method="post" action="/new_buddy">                      		
+                            <input type="text" name="first_name" placeholder="First Name*"><br>
+                            <input type="text" name="last_name" placeholder="Last Name*"><br>
+                            <input type="text" name="email" placeholder="Email*"><br>
+                            <h6>Add a message for your buddy:</h6><br>
+                            <input type="text" name="message"><br>
+                            <input type="submit">
+                        </form>
+                    </div>
+        </div>
+    </div>
+
 </div>
-
-
-<div>
-    <form class="form" method="post" action="/new_buddy">  
-		<h3>Add a new buddy:</h3>
-        <input type="text" name="first_name" placeholder="First Name*"><br>
-        <input type="text" name="last_name" placeholder="Last Name*"><br>
-        <input type="text" name="email" placeholder="Email*"><br>
-        <h4>Add a message for your buddy:</h4><br>
-        <input type="text" name="message"><br>
-        <input type="submit">
-    </form>
-</div>
-
 
 {% endblock %}
