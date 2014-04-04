@@ -26,6 +26,64 @@ def load_user(user_id):
 # Adding markdown capability to the app
 Markdown(app)
 
+
+# Defining some useful functions to make routes easier:
+
+def finds_company_id(company_name):
+    company = model.Company.query.filter_by(name=company_name).first()
+
+    if not company:
+        company = model.Company(name=company_name)
+        model.session.add(company)
+        model.session.commit()
+
+    return company.id
+
+def finds_category_id(category_name):
+    category=model.Category.query.filter_by(name=category_name).first()
+
+    if category==None:
+        category=model.Category(name=category_name)
+        model.session.add(category)
+        model.session.commit()
+
+    return category.id
+
+
+def buddies_list(user_id):
+    friendships = model.Friendship.query.filter_by(user_id=user_id).all()
+    buddies_ids = []
+
+#TODO: This can be made easier with backrefs:    
+    for friendship in friendships:
+        buddy_id = friendship.buddy_id
+        buddies_ids.append(buddy_id)
+
+    buddies = []
+
+    for buddy in buddies_ids:
+        user = model.User.query.filter_by(id=buddy).one()
+        buddies.append(user)
+
+    return buddies 
+
+def open_invitations_list(user_id):
+    invitations = model.Invitation.query.filter_by(inviter_id=user_id).all()
+
+    open_invitations = []
+
+    for invite in invitations:
+        if invite.status == "Open":
+            open_invitations.append(invite)
+
+
+    return open_invitations
+
+
+
+
+############ Routes start here #######################
+
 @app.route("/")
 def set_user():
     return render_template("set_user.html")
@@ -78,25 +136,38 @@ def create_user():
     model.session.commit()
     
     login_user(user)
+    flash("Welcome to Referraly!")
     return redirect(url_for("main_wallet"))
+
 
 
 @app.route("/main_wallet")
 @login_required
 def main_wallet():
     user_id = current_user.id
-    codes = model.Code.query.filter_by(user_id=user_id).all() 
+    codes_shared = model.Code.query.filter_by(user_id=user_id).all() 
+    
+    buddies = model.Friendship.query.filter_by(user_id=user_id).all()
+    
+    codes_list=[]
 
-    return render_template("main_wallet.html", codes=codes)
+    for buddy in buddies:
+        #codes = buddy.codes
+        buddy_id = buddy.buddy_id
+        codes = model.Code.query.filter_by(user_id=buddy_id).all()
+        for code in codes:
+            codes_list.append(code)
+
+    return render_template("main_wallet.html", codes_for_user= codes_list,
+                                               codes_shared=codes_shared)
+
     
 
-
+#This route shows the details of the codes the user is sharing with others:
 @app.route("/see_details/<int:code_id>")
 @login_required
 def code_details(code_id):
     details= model.Code.query.filter_by(id=code_id).one() 
-    
-    #print dir(details)
 
     referral_code= details.referral_code
     company_id= details.company_id
@@ -109,6 +180,14 @@ def code_details(code_id):
     else:
         description= "No description provided"
     
+    category=model.CodesCat.query.filter_by(code_id=code_id).first()
+    category_name=""
+    if category:
+        category_details=model.Category.query.filter_by(id=category.id).first()
+        category_name=category_details.name 
+    else:
+        category_name="No category provided"
+
     if details.url:
         url= details.url
     else:
@@ -118,20 +197,64 @@ def code_details(code_id):
                                                 company_name= company_name,
                                                 expiry_date=expiry_date,
                                                 description=description,
+                                                category=category_name,
                                                 url=url)
 
-def finds_company_id(company_name):
-    company = model.Company.query.filter_by(name=company_name).first()
 
-    if not company:
-        company = model.Company(name=company_name)
-        model.session.add(company)
-        model.session.commit()
+#This route shows the details of the codes the user's buddies have shared with her, 
+#it shows the same as see_details() but it adds the name of the buddy.
+@app.route("/code_for_user/<int:code_id>")
+@login_required
+def code_for_user(code_id):
+    details= model.Code.query.filter_by(id=code_id).one() 
+    
 
-    return company.id
+    referral_code= details.referral_code
+    company_id= details.company_id
+    company = model.Company.query.filter_by(id=company_id).one()
+    company_name = company.name
+    expiry_date= details.expiry_date
+    user_id= details.user_id
+
+    user = model.User.query.filter_by(id=user_id).first()
+
+    first_name = user.first_name
+    last_name = user.last_name
+
+    name = first_name+" "+last_name
+
+    if details.description:
+        description= details.description
+    else:
+        description= "No description provided"
+    
+    category=model.CodesCat.query.filter_by(code_id=code_id).first()
+    category_name=""
+    if category:
+        category_details=model.Category.query.filter_by(id=category.id).first()
+        category_name=category_details.name 
+    else:
+        category_name="No category provided"
+
+    if details.url:
+        url= details.url
+    else:
+        url= "No URL provided"
 
 
 
+    return render_template("code_for_user.html", referral_code=referral_code,
+                                                company_name= company_name,
+                                                expiry_date=expiry_date,
+                                                description=description,
+                                                name=name,
+                                                category=category_name,
+                                                url=url)
+
+
+
+#This route allows the user to add a new code to her wallet:
+#TODO: The categories are buggy
 @app.route("/new_code", methods=["POST"])
 @login_required
 def add_code():
@@ -143,6 +266,14 @@ def add_code():
     company= form.company.data
 
     company_id = finds_company_id(company)
+
+    category_name=form.category.data
+
+    #print "This is category_name:"+category_name
+    
+    category_id=finds_category_id(category_name)
+
+    #print "this is category_id:"+ str(category_id)
 
     if form.expiry_date.data=="":
         form.expiry_date.data = None
@@ -157,35 +288,33 @@ def add_code():
     
     model.session.commit()
     model.session.refresh(code)
+
+    code_category = model.CodesCat(code_id=code.id,
+                                  category_id=category_id)
+
+    model.session.add(code_category)
+    model.session.commit()
+    model.session.refresh(code_category)
+
     flash("You've added a code to your wallet")
 
     return redirect(url_for("main_wallet"))
 
 
 
+# This shows the buddies that the user has:
 @app.route("/buddies")
 @login_required
 def see_buddies():
-    user_id= current_user.id
-    friendships = model.Friendship.query.filter_by(user_id=user_id).all()
-    buddies_ids = []
-
-#TODO: This can be made easier wit backrefs:    
-    for friendship in friendships:
-        buddy_id = friendship.buddy_id
-        buddies_ids.append(buddy_id)
-
-
-    buddies = []
-
-    for buddy in buddies_ids:
-        user = model.User.query.filter_by(id=buddy).one()
-        buddies.append(user)
+    user_id = current_user.id
+    buddies = buddies_list(user_id)
 
     return  render_template("buddies.html", buddies=buddies)
 
 
 
+#This allows the user to invite someone to be their buddy.
+# It only creates the invitation:
 @app.route("/new_buddy", methods=["POST"])
 @login_required
 def add_buddy():
@@ -195,14 +324,18 @@ def add_buddy():
         flash("Please, fill out all required fields")
         return render_template("buddies.html")
 
-    if model.User.query.filter_by(email=form.email.data).first():
-        buddy = model.User.query.filter_by(email=form.email.data).first()
-        
-        if form.message.data:
-            message=form.message.data
-        else:
-            message=""
+    if form.message.data:
+            message = form.message.data
+    else:
+        message = ""
 
+    #Get the buddies list to be able to repopulate the buddies main page:
+    user_id = current_user.id
+    buddies = buddies_list(user_id)
+
+    buddy = model.User.query.filter_by(email=form.email.data).first()
+
+    if buddy:
         invitation = model.Invitation(first_name=buddy.first_name,
                                       last_name=buddy.last_name,
                                       invitee_email=buddy.email,
@@ -215,14 +348,9 @@ def add_buddy():
         model.session.commit()
 
         flash("A invitation has been sent")
-        return render_template("buddies.html")
-
+        return render_template("buddies.html", buddies=buddies)
 
     else:
-        if form.message.data:
-            message=form.message.data
-        else:
-            message=""
 
         buddy = model.Invitation(invitee_email=form.email.data, 
                            first_name=form.first_name.data,
@@ -235,7 +363,7 @@ def add_buddy():
         model.session.commit()
     
         flash("A invitation has been sent")
-        return render_template("buddies.html")
+        return render_template("buddies.html", buddies=buddies)
 
 
 
@@ -256,43 +384,84 @@ def see_buddy(id):
                                                  codes=codes)
 
 
-@app.route("/codes")
-@login_required
-def codes_available():
-    user_id= current_user.id
-    
-    buddies = model.Friendship.query.filter_by(user_id=user_id).all()
-    
-    codes_list=[]
-
-    for buddy in buddies:
-        #codes = buddy.codes
-        buddy_id = buddy.buddy_id
-        codes = model.Code.query.filter_by(user_id=buddy_id).all()
-        for code in codes:
-            codes_list.append(code)
-
-    return render_template("codes_available.html", codes= codes_list)
 
 
+#These four admin routes allow the administrator to accept invitations 
+#for the invitees and thus create the friendships.
+@app.route("/admin")
+def manage_invites():
+
+    return render_template("open_invitations.html")
 
 
-@app.route('/ajax/get_codes', methods = ['GET'])
-@login_required
-def get_codes(code_id):
-    #must get url to just get the codes for the site in question.
-    user = current_user
-    user_id=user.id
-    codes = model.Code.query.filter_by(user_id=user_id).all()
-    codes_dict ={}
-    for code in codes:
-        name=code.company.name
-        codes_dict.update({name: name})     
+@app.route("/admin/<int:user_id>")
+def invitations_by_id(user_id):
 
-    return jsonify(codes_dict)
+    invitations = open_invitations_list(user_id)
 
-#def new_code_popup /ajax/new_code
+    return render_template("open_invitations.html", invitations=invitations)
 
+
+@app.route("/admin/by_email", methods=["POST"])
+def invitations_by_email():
+    email_form = forms.LoginForm(request.form)
+    email = email_form.email.data
+
+    user = model.User.query.filter_by(email=email).one()
+    user_id = user.id
+
+    invitations = open_invitations_list(user_id)
+
+    return render_template("open_invitations.html", invitations=invitations)
+
+
+
+@app.route("/admin/accept_invite/<int:id>")
+def accept_invite(id):
+    invite = model.Invitation.query.filter_by(id=id).one()
+
+    #We change the status of the invitation:
+    invite.status = "Accepted"
+    model.session.commit()
+
+    #We create the user:
+    buddy = model.User(first_name=invite.first_name,
+                       last_name=invite.last_name,
+                       email=invite.invitee_email,
+                       password="Password")
+
+    model.session.add(buddy)
+    model.session.commit()
+    model.session.refresh(buddy)
+
+    #We create the friendship, symmetrical:
+    friendship = model.Friendship(user_id=invite.inviter_id,
+                                  buddy_id=buddy.id,
+                                  is_active="True")
+
+    model.session.add(friendship)
+
+    friendship_back = model.Friendship(user_id=buddy.id,
+                                       buddy_id=invite.inviter_id,
+                                       is_active="True")
+
+    model.session.add(friendship_back)
+    model.session.commit()
+    model.session.refresh(friendship)
+    model.session.refresh(friendship_back)
+
+    flash("The users are now friends")
+
+    #We refresh the list of pending invitations:
+    invitations = open_invitations_list(invite.inviter_id)
+
+
+    return render_template("open_invitations.html", invitations=invitations)
+
+
+
+
+#These are the routes for the chrome extension popup:
 @app.route('/popup')
 def code_form():
     return render_template("popup.html")
@@ -347,6 +516,7 @@ def add_code_plugin():
 @login_required
 def get_codes_by_site():
     long_url = request.args.get("site")
+    print long_url
     url_list=long_url.split("/")
     p = re.compile("www.")
     

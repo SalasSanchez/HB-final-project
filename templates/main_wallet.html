@@ -11,7 +11,7 @@
             <div class="panel panel-info">
                 <div class="panel-heading">Codes that you are sharing:</div>
                 <div class="panel-body">
-                      <ul>{% for code in codes %}
+                      <ul>{% for code in codes_shared %}
                           <li><a href="/see_details/{{code.id}}">{{ code.company.name }}</a></li> 
                       {% endfor %}
                       </ul>
@@ -24,8 +24,8 @@
             <div class="panel-heading">Codes you can use:</div>
             <div class="panel-body">
                 <ul>
-                {% for code in codes %}
-                    <li><a href="/see_details?id={{code.id}}">{{ code.company.name }}</a></li> 
+                {% for code in codes_for_user %}
+                    <li><a href="/code_for_user/{{code.id}}">{{ code.company.name }}</a></li> 
                 {% endfor %}
                 </ul>
             </div>
@@ -41,9 +41,8 @@
                       <input type="text" name="code" placeholder="Code or Link*"><br>
                       <input type="text" name="url" placeholder="URL for website"><br>
                       <input type="text" name="category" placeholder="Category"><br>
-                      <h4>What's the expiry date?</h4><br>
+                      <h6>What's the expiry date?</h6><br>
                       <input type="date" name="expiry_date" placeholder="Expiry Date"><br>
-                      <h4>Do you want to add a description?</h4><br>
                       <input type="text" name="description" placeholder="Description"><br>
                       <input type="submit">
                    </form>
