@@ -1,38 +1,42 @@
 <!DOCTYPE html>
-
-
 <html>
-    <!-- <head> 
-    <link href="/static/css/bootstrap.css" rel="stylesheet"/>
-	</head> -->
+    <head> 
+    <link rel="stylesheet" type="text/css" href="bootstrap.min.css"/>
+	</head>
 
 	<body>
-	    <h3>REFERRALY</h3>
-	    <div id="popup_content"></div>
-	    <div class='panel panel-success'>
-	    <!-- 	<div class='panel-heading'>Referally</div>
-	    	<div class='panel-body'>Hello World</div> -->
-	    </div>
-
-		    <div id="content">
-		    	<h4> Add a code to your wallet: </h4>
-			    	<form id="add_code_form" method="POST">
-						<input type="text" name="company" placeholder="Company*"><br>
-	                    <input type="text" name="code" placeholder="Code or Link*"><br>
-	                    <input type="text" name="url" placeholder="URL for website"><br>
-	                    <input type="date" name="expiry_date" placeholder="Expiry Date"><br>
-	                    <input type="text" name="description" placeholder="Description"><br>
-				    <input type="submit" id="form_submit" value="Create New Code">
-			</form>
-
-
+			<div class="container">
+		            <nav id="navbar" class='navbar navbar-default navbar-fixed-top' role="navigation">
+		                    <div class="container">
+		                            <a class='navbar-brand'>Referraly</a>
+		                    </div>
+		            </nav>
+		        </div>
+			
+			<div class="row" style="height:45px">
 		    </div>
+		    
+		    <div id="popup_content"></div>
 
+		   	<div class="col-md-4">
+        		<div class="panel panel-info">
+            		<div class="panel-heading">Add a code to your wallet:</div>
+                		<div class="panel-body">
+
+					    	<form id="add_code_form" method="POST">
+								<input type="text" class="form-control" name="company" placeholder="Company*"><br>
+			                    <input type="text" class="form-control" name="code" placeholder="Code or Link*"><br>
+			                    <input type="text" class="form-control" name="url" placeholder="URL for website"><br>
+			                    <input type="date" class="form-control" name="expiry_date" placeholder="Expiry Date"><br>
+			                    <input type="text" class="form-control" name="description" placeholder="Description"><br>
+						    	<button type="submit" class="btn btn-primary" id="form_submit">Submit</button>
+							</form>
+						</div>
+			    </div>
 	</body>
 	
 	<script src="jquery.js"></script>
 	<script src="popup.js">  </script>
-
 
 
 </html>
