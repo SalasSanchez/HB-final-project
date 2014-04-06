@@ -1,33 +1,39 @@
+<!-- From this page, the user can see the buddies she has and 
+she can send an invitation to a new person, 
+who will be become a buddy once they accept the invite. -->
+
 {% extends "base.html" %}
 
 {% block content %}
 
 <div class="row">
-    <div class="col-md-6">
+    <div class="col-md-4">
         <div class="panel panel-info">
                 <div class="panel-heading">Check out your buddies:</div>
                     <div class="panel-body">
                         <ul>
-                        {% for buddy in buddies %}
-                            <li><a href="/buddy/{{buddy.id}}">{{ buddy.first_name }}</a></li> 
+                        {% for buddy in buddies|sort(attribute="first_name") %}
+                            <p><a class="text-info" href="/buddy/{{buddy.id}}">{{ buddy.first_name }}</a></p> 
                         {% endfor %}
                         </ul>
                     </div>
         </div>
     </div>
 
-    <div class="col-md-6">
+    <div class="col-md-4">
         <div class="panel panel-info">
                 <div class="panel-heading">Add a new buddy:</div>
                     <div class="panel-body">   
-                        <form class="form" method="post" action="/new_buddy">                      		
-                            <input type="text" name="first_name" placeholder="First Name*"><br>
-                            <input type="text" name="last_name" placeholder="Last Name*"><br>
-                            <input type="text" name="email" placeholder="Email*"><br>
-                            <h6>Add a message for your buddy:</h6><br>
-                            <input type="text" name="message"><br>
-                            <input type="submit">
-                        </form>
+                        <div class="form-group">
+                            <form class="form" method="post" action="/new_buddy">                      		
+                                <input type="text" class="form-control" name="first_name" placeholder="First Name*"><br>
+                                <input type="text" class="form-control" name="last_name" placeholder="Last Name*"><br>
+                                <input type="text" class="form-control" name="email" placeholder="Email*"><br>
+                                <h6>Add a message for your buddy:</h6><br>
+                                <input type="text" class="form-control" name="message"><br>
+                                <button type="submit" class="btn btn-primary">Submit</button>
+                            </form>
+                        </div>
                     </div>
         </div>
     </div>

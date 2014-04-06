@@ -25,3 +25,7 @@ class NewBuddyForm(Form):
     last_name = TextField("Last Name", [validators.Required()])
     email = TextField("Email", [validators.Required(), validators.Email()])
     message = TextField("Add a personal message for your buddy", [validators.Optional()])
+
+class EmailForm(Form):
+    email = TextField("Email", [validators.Required(), validators.Email()])
+

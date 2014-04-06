@@ -1,24 +1,29 @@
+<!-- This shows the expanded info on a code, 
+including the code or link the user needs to get the discount.
+This page shows the info for the codes that are shared by the user.
+ -->
+<!-- TODO: code_details and code_for_user overlap
+ -->
 
 {% extends "base.html" %}
 
 {% block content %}
 
-<div class="col-md-6">
-        <div class="panel panel-info">
-                <div class="panel-heading">About your code:</div>
-                    <div class="panel-body">          
-			            <ul>
-			                <li><h5>Referral code:</h5> {{referral_code}}</li><br>
-							<li><h5>Company:</h5> {{company_name}}</li><br>         
-							<li><h5>Expiry Date:</h5> {{expiry_date}}</li><br>
-							<li><h5>Description:</h5> {{description}}</li><br>
-							<li><h5>Category:</h5>{{category}}</li><br>
-							<li><h5>Url:</h5><a href="http://{{url}}">{{url}}</a></li><br>
-			            </ul>
-			        </div>    
-		</div>
-</div>
-
+	</div><div class="col-md-4">
+	        <div class="panel panel-info">
+	                <div class="panel-heading">About your code:</div>
+	                    <div class="panel-body">          
+				            <ul>
+				                <p class="text-info">Referral code:</p><p>  {{referral_code}}</p><br>
+								<p class="text-info">Company:</p><p>  {{company_name}}</p><br>         
+								<p class="text-info">Expiry Date:</p><p>  {{expiry_date}}</p><br>
+								<p class="text-info">Description:</p><p>  {{description}}</p><br>
+								<p class="text-info">Category:</p><p>   {{category}}</p><br>
+								<p class="text-info">Url:</p><p>   <a href="http://{{url}}">{{url}}</p><br>
+				            </ul>
+				        </div>    
+			</div>
+	</div>
 
 
 {% endblock %}

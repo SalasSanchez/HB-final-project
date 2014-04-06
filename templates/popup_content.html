@@ -1,24 +1,23 @@
-{% with messages = get_flashed_messages(with_categories=true) %}
-	    {% if messages %}
-	    <ul class=flashes>
-	        {% for category, message in messages %}
-	        <li class="{{ category }}">{{ message }}</li>
-	        {% endfor %}
-	    </ul>
-	    {% endif %}
-	    {% endwith %}
 
+			<div class="col-md-4">
+	            <div class="panel panel-info">
+	                <div class="panel-heading">Available codes:</div>
+		                <div class="panel-body">
+							<div id="codes_list">
+								{% with messages = get_flashed_messages(with_categories=true) %}
+								    {% if messages %}
+								    <ul class=flashes>
+								        {% for category, message in messages %}
+								        <p class="{{ category }}">{{ message }}</p>
+								        {% endfor %}
+								    </ul>
+								    {% endif %}
+								    {% endwith %}
 
-
-	    {% block content %}
-
-			<div id="codes"><h4>Available codes:</h4>
-				<div id="codes_list">
-
-					{% for code in codes %}
-                	<li><a href="/see_details/{{code.id}}">{{ code.company.name }}</a></li> 
-            		{% endfor %}
-
+								{% for code in codes %}
+			                	<p><a target= class="text-info" id="code_link" href="http://localhost:5000/code_for_user/{{code.id}}">{{ code.company.name }}</a></p> 
+			            		{% endfor %}
+			            	</div>
+		            	</div>
 				</div>
 			</div>
-		{% endblock %}

@@ -1,4 +1,6 @@
-
+<!-- Main page showing all the codes the user is sharing, 
+and those codes that are available for the user from her buddies. 
+A new code can be added from here, too. -->
 
 {% extends "base.html" %}
 
@@ -7,46 +9,47 @@
 
 <div class="row">
       
-      <div class="col-md-3">
+      <div class="col-md-4">
             <div class="panel panel-info">
                 <div class="panel-heading">Codes that you are sharing:</div>
                 <div class="panel-body">
-                      <ul>{% for code in codes_shared %}
-                          <li><a href="/see_details/{{code.id}}">{{ code.company.name }}</a></li> 
-                      {% endfor %}
+                      <ul>{% for code in codes_shared|sort(attribute='company.name') %}
+                            <p><a class="text-info" href="/see_details/{{code.id}}">{{ code.company.name }}</a></p> 
+                            {% endfor %}
                       </ul>
                 </div>
             </div>
       </div>
 
-    <div class="col-md-6">
+    <div class="col-md-4">
         <div class="panel panel-info">
             <div class="panel-heading">Codes you can use:</div>
             <div class="panel-body">
                 <ul>
-                {% for code in codes_for_user %}
-                    <li><a href="/code_for_user/{{code.id}}">{{ code.company.name }}</a></li> 
+                {% for code in codes_for_user|sort(attribute='company.name') %}
+                    <p><a class="text-info" href="/code_for_user/{{code.id}}">{{ code.company.name }}</a></p>
                 {% endfor %}
                 </ul>
             </div>
         </div>
     </div>
 
-  <div class="col-md-3">
-    <div class="panel panel-info">
-        <div class="panel-heading">Add a new code:</div>
-            <div class="panel-body">
-                  <form method="post" action="/new_code">
-                      <input type="text" name="company" placeholder="Company*"><br>
-                      <input type="text" name="code" placeholder="Code or Link*"><br>
-                      <input type="text" name="url" placeholder="URL for website"><br>
-                      <input type="text" name="category" placeholder="Category"><br>
-                      <h6>What's the expiry date?</h6><br>
-                      <input type="date" name="expiry_date" placeholder="Expiry Date"><br>
-                      <input type="text" name="description" placeholder="Description"><br>
-                      <input type="submit">
-                   </form>
-            </div>
+  <div class="col-md-4">
+      <div class="panel panel-info">
+          <div class="panel-heading">Add a new code:</div>
+            <div class="panel-body">           
+              <div class="form-group">
+                    <form method="post" action="/new_code">
+                        <input type="text" class="form-control" name="company" placeholder="Company*"><br>
+                        <input type="text" class="form-control" name="code" placeholder="Code or Link*"><br>
+                        <input type="text" class="form-control" name="url" placeholder="URL for website"><br>
+                        <input type="text" class="form-control" name="category" placeholder="Category"><br>
+                        <h6>What's the expiry date?</h6><br>
+                        <input type="date" class="form-control" name="expiry_date" placeholder="Expiry Date"><br>
+                        <input type="text" class="form-control" name="description" placeholder="Description"><br>
+                        <button type="submit" class="btn btn-primary" id="form_submit">Submit</button>
+                     </form>
+              </div>
         </div>
     </div>
 </div>

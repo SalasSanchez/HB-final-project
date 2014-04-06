@@ -65,7 +65,7 @@ def buddies_list(user_id):
         user = model.User.query.filter_by(id=buddy).one()
         buddies.append(user)
 
-    return buddies 
+    return buddies
 
 def open_invitations_list(user_id):
     invitations = model.Invitation.query.filter_by(inviter_id=user_id).all()
@@ -173,7 +173,9 @@ def code_details(code_id):
     company_id= details.company_id
     company = model.Company.query.filter_by(id=company_id).one()
     company_name = company.name
-    expiry_date= details.expiry_date
+    expiry_date_long= details.expiry_date
+
+    expiry_date=re.sub('00:00:00', '', str(expiry_date_long))
     
     if details.description:
         description= details.description
@@ -213,7 +215,10 @@ def code_for_user(code_id):
     company_id= details.company_id
     company = model.Company.query.filter_by(id=company_id).one()
     company_name = company.name
-    expiry_date= details.expiry_date
+    
+    expiry_date_long= details.expiry_date
+    expiry_date=re.sub('00:00:00', '', str(expiry_date_long))
+
     user_id= details.user_id
 
     user = model.User.query.filter_by(id=user_id).first()
@@ -268,12 +273,8 @@ def add_code():
     company_id = finds_company_id(company)
 
     category_name=form.category.data
-
-    #print "This is category_name:"+category_name
     
     category_id=finds_category_id(category_name)
-
-    #print "this is category_id:"+ str(category_id)
 
     if form.expiry_date.data=="":
         form.expiry_date.data = None
@@ -404,7 +405,7 @@ def invitations_by_id(user_id):
 
 @app.route("/admin/by_email", methods=["POST"])
 def invitations_by_email():
-    email_form = forms.LoginForm(request.form)
+    email_form = forms.EmailForm(request.form)
     email = email_form.email.data
 
     user = model.User.query.filter_by(email=email).one()
@@ -462,15 +463,11 @@ def accept_invite(id):
 
 
 #These are the routes for the chrome extension popup:
-@app.route('/popup')
-def code_form():
-    return render_template("popup.html")
 
 
 @app.route("/ajax/new_code", methods=["POST"])
 @login_required
 def add_code_plugin():
-    print "new_code hit"
     company= request.form.get('company')
     
     company_id = finds_company_id(company)
@@ -480,7 +477,7 @@ def add_code_plugin():
     if request.form.get('url'):
         url = request.form.get('url')
     else:
-        url = "No URL"
+        url = "No URL provided"
 
 
     if request.form.get('expiry_date'):
@@ -507,7 +504,6 @@ def add_code_plugin():
     
     model.session.commit()
     model.session.refresh(code)
-    flash("You've added a code to your wallet")
 
     return "A new code was added"
 
@@ -516,7 +512,6 @@ def add_code_plugin():
 @login_required
 def get_codes_by_site():
     long_url = request.args.get("site")
-    print long_url
     url_list=long_url.split("/")
     p = re.compile("www.")
     
@@ -525,10 +520,21 @@ def get_codes_by_site():
         if p.match(item):
             url=item
 
-    codes = model.Code.query.filter(model.Code.url.like('%'+url+'%')).filter_by(user_id=current_user.id).all()
+    if url == "":
+        codes=[]
+    else:
+
+        buddies=model.Friendship.query.filter_by(user_id=current_user.id).all()
+        buddy_ids=[]
+        for buddy in buddies:
+            buddy_ids.append(buddy.buddy_id)
+
+        codes = model.Code.query.filter(model.Code.user_id.in_(buddy_ids), model.Code.url.like('%'+url+'%')).all()
+    
+    if codes==[]:
+        flash("Sorry, no codes available for this site")
+
     return render_template("popup_content.html", codes=codes)
-
-
 
 
 if __name__ == "__main__":

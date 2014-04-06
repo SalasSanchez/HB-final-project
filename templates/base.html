@@ -8,11 +8,14 @@
         <style> 
 
                 .navbar-brand {
-                    font-weight: bolder;
-                    font-size: 150%;
+                    font-weight: ;
+                    font-size: 200%;
                 }
 
         </style>
+
+        <base target="_blank" />
+
     </head>
     <body>
         <div class="container">
@@ -38,7 +41,7 @@
         {% if messages %}
         <ul class=flashes>
         {% for category, message in messages %}
-        <li class="{{ category }}">{{ message }}</li>
+        <p class="{{ category }}">{{ message }}</p>
         {% endfor %}
         </ul>
         {% endif %}

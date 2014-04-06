@@ -5,10 +5,12 @@
 	</head>
 
 	<body>
+
 			<div class="container">
 		            <nav id="navbar" class='navbar navbar-default navbar-fixed-top' role="navigation">
 		                    <div class="container">
-		                            <a class='navbar-brand'>Referraly</a>
+		                            <a class='navbar-brand' id="button_main" href="http://localhost:5000/main_wallet">Referraly</a>
+			                        <button type="button" id="close_popup" class="btn btn-info btn-xs pull-right">Close</button>
 		                    </div>
 		            </nav>
 		        </div>
@@ -22,7 +24,6 @@
         		<div class="panel panel-info">
             		<div class="panel-heading">Add a code to your wallet:</div>
                 		<div class="panel-body">
-
 					    	<form id="add_code_form" method="POST">
 								<input type="text" class="form-control" name="company" placeholder="Company*"><br>
 			                    <input type="text" class="form-control" name="code" placeholder="Code or Link*"><br>
