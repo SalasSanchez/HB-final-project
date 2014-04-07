@@ -31,10 +31,8 @@ class User(Base, UserMixin):   #UserMixin- only for user model definitions.
     created_on = Column(DateTime, nullable=False, default=datetime.datetime.today())
 
 
+    #The password is encoded and some 'salt' added
     salt = "sdjbagadfkljgb"
-
-
-
     def set_password(self, password):
         password = password.encode("utf-8")
         self.password = hashlib.sha1(password + self.salt).hexdigest()
@@ -49,7 +47,7 @@ class Code(Base):
     __tablename__ = "codes"
     
     id = Column(Integer, primary_key=True)
-    referral_code = Column(String(200), nullable=False)
+    referral_code = Column(String(500), nullable=False)
     company_id = Column(Integer, ForeignKey("companies.id"), nullable=False)
     expiry_date = Column(DateTime, default=datetime.datetime(3000, 1, 1)) 
     user_id = Column(Integer, ForeignKey("users.id"), default=0)

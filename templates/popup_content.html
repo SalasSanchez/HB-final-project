@@ -1,3 +1,7 @@
+<!-- this populates the popup with the codes that the user can use on that site. 
+[target= "_blank"] allows the user to click on the code and get the info 
+about the code. -->
+
 
 			<div class="col-md-4">
 	            <div class="panel panel-info">
@@ -15,7 +19,7 @@
 								    {% endwith %}
 
 								{% for code in codes %}
-			                	<p><a target= class="text-info" id="code_link" href="http://localhost:5000/code_for_user/{{code.id}}">{{ code.company.name }}</a></p> 
+			                	<p><a target="_blank"  class="text-info" id="code_link" href="http://localhost:5000/code_for_user/{{code.id}}">{{ code.company.name }}</a></p> 
 			            		{% endfor %}
 			            	</div>
 		            	</div>
