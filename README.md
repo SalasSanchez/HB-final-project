@@ -1,6 +1,4 @@
-REFERRALy
-
-HB-final-project
+REFERRALY
 ================
 
 Website and plugin for sharing referral codes with friends
@@ -13,7 +11,7 @@ When the user finds a 'refer a friend' discount on a website, she can easily sto
 it by using the chrome extension plugin. All codes that the user has in her wallet
 are automatically made available to all her buddies. 
 
-And when the user is browsing on a site and wonders whether she has a discount
+When the user is browsing on a site and wonders whether she has a discount
 available to her for that website, all she needs to do is click on the plugin
 and she will see on the popup those codes that she can use for the page she is on.
 
@@ -26,9 +24,22 @@ the popup: popup.html; the js file that connects the plugin to the main app, whi
 and the manifest,json file, which includes the configuration of the chrome extension as
 a browser action plug in with a default popup.
 
-The plugin's popup works so that the user can include a code to their wallet and click on the 
+The plugin's popup also lets the user include a code to their wallet and click on the 
 hyperlink of the codes available to the user.
 
 
+WEBAPP:
+Most of the work is done in views.py, where, with python and flask, all the routes are set up.
+The routes that connect the plugin to the database are also here. 
 
+
+TECHNOLOGY USED:
+Python
+Flask Framework
+Javascript
+jQuery
+Jinja
+CSS
+HTML
+Postgres
 
