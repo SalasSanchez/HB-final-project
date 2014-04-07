@@ -1,3 +1,6 @@
+<!-- This is the parent html for all the webapp pages.
+ -->
+ 
 <!DOCTYPE html>
 
 
@@ -37,18 +40,18 @@
 
 
     <div id="content" class="container">
-        {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-        <ul class=flashes>
-        {% for category, message in messages %}
-        <p class="{{ category }}">{{ message }}</p>
-        {% endfor %}
-        </ul>
-        {% endif %}
-        {% endwith %}
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                <p class=flashes>
+                {% for category, message in messages %}
+                <p class="{{ category }}">{{ message }}</p>
+                {% endfor %}
+                </p>
+                {% endif %}
+                {% endwith %}
 
-
-        {% block content %}{% endblock %}</div>
+    
+    {% block content %}{% endblock %}</div>
 
     <script src="//netdna.bootstrapcdn.com/bootstrap/3.1.1/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="/static/js/jquery-2.0.3.min.js"></script>
