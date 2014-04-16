@@ -182,13 +182,13 @@ def code_details(code_id):
     else:
         description= "No description provided"
     
-    category=model.CodesCat.query.filter_by(code_id=code_id).first()
-    category_name=""
-    if category:
-        category_details=model.Category.query.filter_by(id=category.id).first()
-        category_name=category_details.name 
-    else:
-        category_name="No category provided"
+    # category=model.CodesCat.query.filter_by(code_id=code_id).first()
+    # category_name=""
+    # if category:
+    #     category_details=model.Category.query.filter_by(id=category.id).first()
+    #     category_name=category_details.name 
+    # else:
+    #     category_name="No category provided"
 
     if details.url:
         url= details.url
@@ -199,7 +199,7 @@ def code_details(code_id):
                                                 company_name= company_name,
                                                 expiry_date=expiry_date,
                                                 description=description,
-                                                category=category_name,
+                                                # category=category_name,
                                                 url=url)
 
 
@@ -224,22 +224,22 @@ def code_for_user(code_id):
     user = model.User.query.filter_by(id=user_id).first()
 
     first_name = user.first_name
-    last_name = user.last_name
+    #last_name = user.last_name
 
-    name = first_name+" "+last_name
+    name = first_name  #+" "+last_name
 
     if details.description:
         description= details.description
     else:
         description= "No description provided"
     
-    category=model.CodesCat.query.filter_by(code_id=code_id).first()
-    category_name=""
-    if category:
-        category_details=model.Category.query.filter_by(id=category.id).first()
-        category_name=category_details.name 
-    else:
-        category_name="No category provided"
+    # category=model.CodesCat.query.filter_by(code_id=code_id).first()
+    # category_name=""
+    # if category:
+    #     category_details=model.Category.query.filter_by(id=category.id).first()
+    #     category_name=category_details.name 
+    # else:
+    #     category_name="No category provided"
 
     if details.url:
         url= details.url
@@ -253,13 +253,12 @@ def code_for_user(code_id):
                                                 expiry_date=expiry_date,
                                                 description=description,
                                                 name=name,
-                                                category=category_name,
+                                                # category=category_name,
                                                 url=url)
 
 
 
 #This route allows the user to add a new code to her wallet:
-#TODO: The categories are buggy
 @app.route("/new_code", methods=["POST"])
 @login_required
 def add_code():
@@ -375,12 +374,12 @@ def see_buddy(id):
     details= model.User.query.filter_by(id=id).one() 
     
     first_name = details.first_name
-    last_name = details.last_name
+    #last_name = details.last_name
     email = details.email
     codes= details.codes
 
     return render_template("buddy_details.html", first_name=first_name,
-                                                 last_name=last_name,
+                                                 #last_name=last_name,
                                                  email=email,
                                                  codes=codes)
 
@@ -463,7 +462,6 @@ def accept_invite(id):
 
 
 #These are the routes for the chrome extension popup:
-
 
 @app.route("/ajax/new_code", methods=["POST"])
 @login_required
